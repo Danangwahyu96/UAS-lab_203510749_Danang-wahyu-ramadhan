@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue App with Weather Widget and Tasks</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 10px 0;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        select {
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        h3 {
+            color: #666;
+        }
+
+        p {
+            color: #444;
+        }
+
+        .completed {
+            text-decoration: line-through;
+        }
+
+        .weather-widget {
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .tasks {
+            margin-top: 20px;
+        }
+
+        .tasks ul {
+            margin-top: 10px;
+        }
+
+        .tasks li {
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1 style="text-align: center; color: #fff;">Weather Widget & Tasks</h1>
+        </header>
+        
+        <div class="container">
+            <div class="weather-widget">
+                <h2>Cuaca Saat Ini</h2>
+                <p v-if="weather">
+                    <strong>Temp:</strong> {{ weather.main.temp }} &#8451;<br>
+                    <strong>Kondisi:</strong> {{ weather.weather[0].description }}<br>
+                    <strong>Kelembapan:</strong> {{ weather.main.humidity }}%
+                </p>
+                <p v-else>Loading...</p>
+            </div>
+            
+            <div class="tasks">
+                <h2>Pilih Tugas Pertemuan:</h2>
+                <select v-model="selectedTask">
+                    <option v-for="(task, index) in tasks" :value="task" :key="index">{{ task.title }}</option>
+                </select>
+
+                <div v-if="selectedTask">
+                    <h3>{{ selectedTask.title }}</h3>
+                    <p>{{ selectedTask.description }}</p>
+                    <a :href="selectedTask.netlifyUrl" target="_blank">lihat</a>
+                </div>
+                <p v-else>Silakan pilih tugas pertemuan.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                weather: null,
+                tasks: [
+                    { title: 'Tugas Pertemuan 1', description: 'Deskripsi tugas pertemuan 1', netlifyUrl: 'https://danang-project-cv.netlify.app/' },
+                    { title: 'Tugas Pertemuan 2', description: 'Deskripsi tugas pertemuan 2', netlifyUrl: 'https://tugas2danang.netlify.app/' },
+                    { title: 'Tugas Pertemuan 3', description: 'Deskripsi tugas pertemuan 3', netlifyUrl: 'https://tugas3danang.netlify.app/' },
+                    { title: 'Tugas Pertemuan 4', description: 'Deskripsi tugas pertemuan 4', netlifyUrl: 'https://tugas4danang.netlify.app' },
+                    { title: 'Tugas Pertemuan 5', description: 'Deskripsi tugas pertemuan 5', netlifyUrl: 'https://tugas5danang.netlify.app' },
+                    { title: 'Tugas Pertemuan 6', description: 'Deskripsi tugas pertemuan 6', netlifyUrl: 'https://tugas6danang.netlify.app/' },
+                    { title: 'Tugas Pertemuan 7', description: 'Deskripsi tugas pertemuan 7', netlifyUrl: 'https://tugas7danang.netlify.app/' },
+                    
+                ],
+                selectedTask: null
+            },
+            created() {
+                this.fetchWeather();
+            },
+            methods: {
+                async fetchWeather() {
+                    try {
+                        const apiKey = 'your-api-key';
+                        const city = 'Jakarta';
+                        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+                        const response = await axios.get(apiUrl);
+                        this.weather = response.data;
+                    } catch (error) {
+                        console.error('Error fetching weather:', error);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
